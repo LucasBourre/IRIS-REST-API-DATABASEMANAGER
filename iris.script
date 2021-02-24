@@ -6,6 +6,7 @@ zn "USER"
 do $System.OBJ.LoadDir("/opt/irisbuild/src","ck",,1)
 
 SET tSC = ##class(Ens.Director).StartProduction("DatabaseManager.Production")
+SET tSC = ##class(Ens.Director).SetAutoStart("DatabaseManager.Production")
 WRITE "[ OK ] Start production"
 
 zn "%SYS"
