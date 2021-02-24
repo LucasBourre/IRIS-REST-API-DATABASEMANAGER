@@ -1,4 +1,4 @@
-Class DatabaseManager.Messages.BusinessServices.CreateTableRequest Extends Ens.Request
+Class DatabaseManager.Messages.BusinessServices.CreateTableRequest Extends DatabaseManager.Messages.BasicRequest
 {
 
 Storage Default
