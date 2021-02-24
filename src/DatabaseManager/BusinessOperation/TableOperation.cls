@@ -7,39 +7,47 @@ Parameter SETTINGS = "generatedClass";
 
 Property generatedClass As %String [ InitialExpression = "DatabaseManager.Datas" ];
 
-Method createTable(pRequest As DatabaseManager.Messages.BusinessOperations.CreateTableRequest, pResponse As DatabaseManager.Messages.BusinessOperations.CreateTableResponse)
+Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pResponse As DatabaseManager.Messages.CreateTableResponse)
 {
+	set pResponse = ##class(DatabaseManager.Messages.CreateTableResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method modifyTable(pRequest As DatabaseManager.Messages.BusinessOperations.ModifyTableRequest, pResponse As DatabaseManager.Messages.BusinessOperations.ModifyTableResponse)
+Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pResponse As DatabaseManager.Messages.ModifyTableResponse)
 {
+	set pResponse = ##class(DatabaseManager.Messages.ModifyTableResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method getTable(pRequest As DatabaseManager.Messages.BusinessOperations.GetTableRequest, pResponse As DatabaseManager.Messages.BusinessOperations.GetTableResponse)
+Method getTable(pRequest As DatabaseManager.Messages.GetTableRequest, pResponse As DatabaseManager.Messages.GetTableResponse)
 {
+	set pResponse = ##class(DatabaseManager.Messages.GetTableResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method deleteTable(pRequest As DatabaseManager.Messages.BusinessOperations.DeleteTableRequest, pResponse As DatabaseManager.Messages.BusinessOperations.DeleteTableResponse)
+Method deleteTable(pRequest As DatabaseManager.Messages.DeleteTableRequest, pResponse As DatabaseManager.Messages.DeleteTableResponse)
 {
+	set pResponse = ##class(DatabaseManager.Messages.DeleteTableResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
 XData MessageMap
 {
 <MapItems>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessOperations.CreateTableRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.CreateTableRequest">
 		<Method>createTable</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessOperations.ModifyTableRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.ModifyTableRequest">
 		<Method>modifyTable</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessOperations.GetTableRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.GetTableRequest">
 		<Method>getTable</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessOperations.DeleteTableRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.DeleteTableRequest">
 		<Method>deleteTable</Method>
  	</MapItem>
 </MapItems>

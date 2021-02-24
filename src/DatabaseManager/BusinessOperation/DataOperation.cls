@@ -3,52 +3,57 @@ Class DatabaseManager.BusinessOperation.DataOperation Extends Ens.BusinessOperat
 
 Parameter INVOCATION = "Queue";
 
-Method createData(pRequest As DatabaseManager.Messages.BusinessOperations.CreateDataRequest, pResponse As DatabaseManager.Messages.BusinessOperations.CreateDataResponse)
+Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pResponse As DatabaseManager.Messages.CreateDataResponse)
 {
-	//TODO
+	set pResponse = ##class(DatabaseManager.Messages.CreateDataResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method searchData(pRequest As DatabaseManager.Messages.BusinessOperations.SearchDataRequest, pResponse As DatabaseManager.Messages.BusinessOperations.SearchDataResponse)
+Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pResponse As DatabaseManager.Messages.SearchDataResponse)
 {
-	//TODO
+	set pResponse = ##class(DatabaseManager.Messages.SearchDataResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method getData(pRequest As DatabaseManager.Messages.BusinessOperations.GetDataRequest, pResponse As DatabaseManager.Messages.BusinessOperations.GetDataResponse)
+Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As DatabaseManager.Messages.GetDataResponse)
 {
-	//TODO
+	set pResponse = ##class(DatabaseManager.Messages.GetDataResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method modifyData(pRequest As DatabaseManager.Messages.BusinessOperations.ModifyDataRequest, pResponse As DatabaseManager.Messages.BusinessOperations.ModifyDataResponse)
+Method modifyData(pRequest As DatabaseManager.Messages.ModifyDataRequest, pResponse As DatabaseManager.Messages.ModifyDataResponse)
 {
-	//TODO
+	set pResponse = ##class(DatabaseManager.Messages.ModifyDataResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
-Method deleteData(pRequest As DatabaseManager.Messages.BusinessOperations.DeleteDataRequest, pResponse As DatabaseManager.Messages.BusinessOperations.DeleteDataResponse)
+Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pResponse As DatabaseManager.Messages.DeleteDataResponse)
 {
-	//TODO
+	set pResponse = ##class(DatabaseManager.Messages.DeleteDataResponse).%New()
+	set pResponse.response ="OK"
    Quit $$$OK
 }
 
 XData MessageMap
 {
 <MapItems>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessServices.CreateDataRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.CreateDataRequest">
 		<Method>createData</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessServices.SearchDataRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.SearchDataRequest">
 		<Method>searchData</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessServices.GetDataRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.GetDataRequest">
 		<Method>getData</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessServices.ModifyDataRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.ModifyDataRequest">
 		<Method>modifyData</Method>
  	</MapItem>
- 	<MapItem MessageType="DatabaseManager.Messages.BusinessServices.DeleteDataRequest">
+ 	<MapItem MessageType="DatabaseManager.Messages.DeleteDataRequest">
 		<Method>deleteData</Method>
  	</MapItem>
 </MapItems>

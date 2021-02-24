@@ -1,11 +1,19 @@
-;do $System.OBJ.LoadDir("/opt/irisbuild/src","ck",,1)
-
 zn "%SYS"
 Do ##class(Security.Users).UnExpireUserPasswords("*")
 
+
 zn "USER"
-zpm "load /opt/irisbuild/ -v":1:1
-write " on tente de démarrer la production"
-Do ##class(Ens.Director).StartProduction("DatabaseManager.Production")
+do $System.OBJ.LoadDir("/opt/irisbuild/src","ck",,1)
+
+SET tSC = ##class(Ens.Director).StartProduction("DatabaseManager.Production")
+WRITE "[ OK ] Start production"
+
+zn "%SYS"
+WRITE "[ OK ] Moved to %SYS Namespace"
+
+WRITE "Import Web applications last" 
+SET tSC = ##class(Security.Applications).Import("/opt/irisbuild/Application.xml")
+write tSC
+WRITE "[ OK ] Import Web applications configuration"
 
 halt
