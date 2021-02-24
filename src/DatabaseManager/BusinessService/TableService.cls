@@ -28,7 +28,7 @@ Method CreateTable(pInput As DatabaseManager.Messages.BusinessServices.CreateTab
 
 
         //Appel du BP RecupererGains
-        s tSC = ..SendRequestSync("DatabaseManager.BusinessProcess.CreateTable", tRequest, .tResponse)	
+        s tSC = ..SendRequestSync("DatabaseManager.BusinessProcess.TableProcess", tRequest, .tResponse)	
 
         set pOutput = tResponse
     }catch Exception{

@@ -1,4 +1,4 @@
-Class DatabaseManager.Messages.BusinessProcesses.CreateTableResponse Extends DatabaseManager.Messages.BasicResponse
+Class DatabaseManager.Messages.BusinessProcesses.CreateTableResponse Extends DatabaseManager.Messages.BusinessOperations.CreateTableResponse
 {
 
 Storage Default

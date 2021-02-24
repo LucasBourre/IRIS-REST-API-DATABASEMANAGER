@@ -1,4 +1,4 @@
-Class DatabaseManager.Messages.BusinessOperations.CreateTableRequest Extends DatabaseManager.Messages.BasicRequest
+Class DatabaseManager.Messages.BusinessOperations.CreateTableRequest Extends DatabaseManager.Messages.BusinessProcesses.CreateTableRequest
 {
 
 Storage Default
