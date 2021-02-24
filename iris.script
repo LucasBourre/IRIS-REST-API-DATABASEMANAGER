@@ -5,4 +5,7 @@ Do ##class(Security.Users).UnExpireUserPasswords("*")
 
 zn "USER"
 zpm "load /opt/irisbuild/ -v":1:1
+write " on tente de démarrer la production"
+Do ##class(Ens.Director).StartProduction("DatabaseManager.Production")
+
 halt
