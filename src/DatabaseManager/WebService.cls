@@ -125,14 +125,13 @@ ClassMethod deleteTable(tableName As %String(MAXLEN=300)) As %Status
     Quit tSC
 }
 
+/// Allow to create data
 ClassMethod createData() As %Status
 {
-	Try{   
-		//Récupération de la requete
+	Try{    
 		do ..JSONStreamToObject(%request.Content,.pRequest,"DatabaseManager.Messages.CreateDataRequest",1) 
    		Set tSC = ##class(Ens.Director).CreateBusinessService("DatabaseManager.BusinessService.DataService",.tService) if $$$ISERR(tSC) quit
-   		
-		//Appel de la méthode
+   		 
 		#Dim pResult As DatabaseManager.Messages.CreateDataResponse 
 		Set tSC = tService.ProcessInput(pRequest,.pResult,"createData") 
 		if $$$ISERR(tSC) Throw tSC
@@ -140,8 +139,7 @@ ClassMethod createData() As %Status
     } catch(exception) {
     	Set tSC = ..ExceptionResponse(exception,.pResult)
     }
-    
-    //Message que l'on retourne en REST 
+     
 	set %response.ContentType = "application/json" 
 	set tJSONStreamStatus =  ..ObjectToJSONStream(pResult, .tOut)
 	set tSC = tOut.OutputToDevice(-1)
@@ -150,12 +148,10 @@ ClassMethod createData() As %Status
 
 ClassMethod searchData() As %Status
 {
-	Try{   
-		//Récupération de la requete
+	Try{    
 		do ..JSONStreamToObject(%request.Content,.pRequest,"DatabaseManager.Messages.SearchDataRequest",1) 
    		Set tSC = ##class(Ens.Director).CreateBusinessService("DatabaseManager.BusinessService.DataService",.tService) if $$$ISERR(tSC) quit
-   		
-		//Appel de la méthode
+   		 
 		#Dim pResult As DatabaseManager.Messages.SearchDataResponse 
 		Set tSC = tService.ProcessInput(pRequest,.pResult,"searchData") 
 		if $$$ISERR(tSC) Throw tSC
@@ -163,8 +159,7 @@ ClassMethod searchData() As %Status
     } catch(exception) {
     	Set tSC = ..ExceptionResponse(exception,.pResult)
     }
-    
-    //Message que l'on retourne en REST 
+      
 	set %response.ContentType = "application/json" 
 	set tJSONStreamStatus =  ..ObjectToJSONStream(pResult, .tOut)
 	set tSC = tOut.OutputToDevice(-1)
@@ -173,16 +168,14 @@ ClassMethod searchData() As %Status
 
 ClassMethod getData(tableName As %String(MAXLEN=300), id As %Integer) As %Status
 {
-	Try{   
-		//Récupération de la requete
+	Try{    
 		
 		set pRequest = ##class(DatabaseManager.Messages.GetDataRequest).%New()
 		set pRequest.tableName = tableName
 		set pRequest.dataId = id 
 
    		Set tSC = ##class(Ens.Director).CreateBusinessService("DatabaseManager.BusinessService.DataService",.tService) if $$$ISERR(tSC) quit
-   		
-		//Appel de la méthode
+   		 
 		#Dim pResult As DatabaseManager.Messages.GetDataResponse 
 		Set tSC = tService.ProcessInput(pRequest,.pResult,"getData") 
 		if $$$ISERR(tSC) Throw tSC
@@ -190,8 +183,7 @@ ClassMethod getData(tableName As %String(MAXLEN=300), id As %Integer) As %Status
     } catch(exception) {
     	Set tSC = ..ExceptionResponse(exception,.pResult)
     }
-    
-    //Message que l'on retourne en REST 
+     
 	set %response.ContentType = "application/json" 
 	set tJSONStreamStatus =  ..ObjectToJSONStream(pResult, .tOut)
 	set tSC = tOut.OutputToDevice(-1)
@@ -200,12 +192,10 @@ ClassMethod getData(tableName As %String(MAXLEN=300), id As %Integer) As %Status
 
 ClassMethod modifyData() As %Status
 {
-	Try{   
-		//Récupération de la requete
+	Try{    
 		do ..JSONStreamToObject(%request.Content,.pRequest,"DatabaseManager.Messages.ModifyDataRequest",1) 
    		Set tSC = ##class(Ens.Director).CreateBusinessService("DatabaseManager.BusinessService.DataService",.tService) if $$$ISERR(tSC) quit
-   		
-		//Appel de la méthode
+   		 
 		#Dim pResult As DatabaseManager.Messages.ModifyDataResponse 
 		Set tSC = tService.ProcessInput(pRequest,.pResult,"modifyData") 
 		if $$$ISERR(tSC) Throw tSC
@@ -213,8 +203,7 @@ ClassMethod modifyData() As %Status
     } catch(exception) {
     	Set tSC = ..ExceptionResponse(exception,.pResult)
     }
-    
-    //Message que l'on retourne en REST 
+     
 	set %response.ContentType = "application/json" 
 	set tJSONStreamStatus =  ..ObjectToJSONStream(pResult, .tOut)
 	set tSC = tOut.OutputToDevice(-1)
@@ -223,14 +212,12 @@ ClassMethod modifyData() As %Status
 
 ClassMethod deleteData(tableName As %String(MAXLEN=300), id As %Integer) As %Status
 {
-	Try{   
-		//Récupération de la requete		
+	Try{    		
 		set pRequest = ##class(DatabaseManager.Messages.DeleteDataRequest).%New()
 		set pRequest.tableName = tableName
 		set pRequest.dataId = id 
    		Set tSC = ##class(Ens.Director).CreateBusinessService("DatabaseManager.BusinessService.DataService",.tService) if $$$ISERR(tSC) quit
-   		
-		//Appel de la méthode
+   		 
 		#Dim pResult As DatabaseManager.Messages.DeleteDataResponse 
 		Set tSC = tService.ProcessInput(pRequest,.pResult,"deleteData") 
 		if $$$ISERR(tSC) Throw tSC
@@ -238,8 +225,7 @@ ClassMethod deleteData(tableName As %String(MAXLEN=300), id As %Integer) As %Sta
     } catch(exception) {
     	Set tSC = ..ExceptionResponse(exception,.pResult)
     }
-    
-    //Message que l'on retourne en REST 
+     
 	set %response.ContentType = "application/json" 
 	set tJSONStreamStatus =  ..ObjectToJSONStream(pResult, .tOut)
 	set tSC = tOut.OutputToDevice(-1)

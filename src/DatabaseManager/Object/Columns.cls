@@ -5,17 +5,11 @@ Property name As %String;
 
 Property type As %String;
 
-Property maxlen As %Integer;
+Property maxlen As %Integer [ InitialExpression = 50 ];
 
-Property index As %Boolean;
+Property index As %Boolean [ InitialExpression = 0 ];
 
-Property required As %Boolean;
-
-Property relationTable As %String;
-
-Property relationColumn As %String;
-
-Property dataTable As %String;
+Property required As %Boolean [ InitialExpression = 0 ];
 
 Storage Default
 {
@@ -34,15 +28,6 @@ Storage Default
 </Value>
 <Value name="5">
 <Value>required</Value>
-</Value>
-<Value name="6">
-<Value>relationTable</Value>
-</Value>
-<Value name="7">
-<Value>relationColumn</Value>
-</Value>
-<Value name="8">
-<Value>dataTable</Value>
 </Value>
 </Data>
 <State>ColumnsState</State>

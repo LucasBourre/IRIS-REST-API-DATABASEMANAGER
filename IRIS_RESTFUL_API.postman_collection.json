@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"tableName\":\"Person\",\r\n\t\"columns\":[\r\n\t\t{\r\n\t\t\t\"name\":\"name\",\t\t\t\t\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"maxlen\":\"30\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"required\":true\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"surname\",\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"maxlen\":\"30\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"required\":true\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"parent\",\r\n\t\t\t\"type\":\"relationship\",\r\n\t\t\t\"maxlen\":\"30\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"relationTable\":\"Tata\",\r\n\t\t\t\"relationColumn\":\"id\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"adress\",\r\n\t\t\t\"type\":\"data\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"dataTable\":\"Adresse\"\r\n\t\t}\r\n\t]\r\n\r\n}",
+							"raw": "{\r\n\t\"tableName\":\"Person\",\r\n\t\"columns\":[\r\n\t\t{\r\n\t\t\t\"name\":\"name\",\t\t\t\t\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"maxlen\":\"30\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"required\":true\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"surname\",\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"maxlen\":\"30\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"required\":true\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"parent\",\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"maxlen\":\"30\",\r\n\t\t\t\"index\":false\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"adress\",\r\n\t\t\t\"type\":\"data\",\r\n\t\t\t\"index\":false,\r\n\t\t\t\"maxlen\":\"30\"\r\n\t\t}\r\n\t]\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
