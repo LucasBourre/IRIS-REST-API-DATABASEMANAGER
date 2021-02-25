@@ -83,7 +83,10 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
 				for j=1:1:def.Properties.Count(){
 					#Dim currentProperty As %Dictionary.PropertyDefinition
 					set currentProperty = def.Properties.GetAt(j)
-					if (property.name = currentProperty.Name) set foundPropertyIndex =1
+					if (property.name = currentProperty.Name){
+						set foundPropertyIndex =1
+						Quit
+					} 
 				}
 
 				if (foundPropertyIndex =0){
@@ -109,7 +112,7 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
 		} else {
 			Throw ##class(%Exception.General).%New("Table does not exists.")
 		}
- 
+
 		
 		set pResponse.response ="OK"
 	}catch Exception{
