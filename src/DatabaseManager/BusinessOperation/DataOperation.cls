@@ -14,11 +14,8 @@ Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pRespo
 	Set pResponse = ##class(DatabaseManager.Messages.CreateDataResponse).%New()
 	Try {
 	
+		Do ..checkTable(pRequest.tableName)
 		Set tableName = pRequest.tableName
-
-		If '(##class(%Dictionary.CompiledClass).%ExistsId(..generatedClass_"."_tableName)){
-			Throw ##class(%Exception.General).%New("Table "_tableName_" doesn't exist")	
-		}
 
 		For i = 1:1:pRequest.data.Count() {
 			Set propertyName = pRequest.data.GetAt(i).name
@@ -27,13 +24,9 @@ Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pRespo
 			}
 		}
 
-		set rs = ..insertData(..generatedData_"."_tableName, pRequest.data) 
+		Set rs = ..insertData(..generatedData_"."_tableName, pRequest.data) 
 		
-		If (rs.%SQLCODEGet()=0){
-			Set pResponse.response = "OK with ID "_rs.%ROWIDGet()
-		}else{
-			Set pResponse.response ="Error with SQLCODE "_rs.%SQLCODEGet()_" : "_rs.%MessageGet()
-		}
+		Set pResponse.response = ..verifyResultSQL(rs)
 		
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
@@ -41,31 +34,79 @@ Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pRespo
 	Quit $$$OK
 }
 
-Method sendError(tsc As %Status)
+Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pResponse As DatabaseManager.Messages.SearchDataResponse)
 {
- 	Do DecomposeStatus^%apiOBJ(tsc, .err, "-d")
-	Set error = ""
-	For i=1:1:err {
-				Set error = error_err(i)
+	Set pResponse = ##class(DatabaseManager.Messages.SearchDataResponse).%New()
+	Set pResponse.response ="OK"
+   Quit $$$OK
+}
+
+Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As DatabaseManager.Messages.GetDataResponse)
+{
+	Set pResponse = ##class(DatabaseManager.Messages.GetDataResponse).%New()
+	Try {
+		Do ..checkTable(pRequest.tableName)
+		Set tableName = pRequest.tableName
+
+		Set pResponse.response ="OK"	
+	}Catch ex {
+		Set pResponse.response = "Error : "_ex.DisplayString()
 	}
-	Set RequestNotSentException = ##class(%Exception.General).%New("","",,error)
-	Throw RequestNotSentException
+   Quit $$$OK
+}
+
+Method modifyData(pRequest As DatabaseManager.Messages.ModifyDataRequest, pResponse As DatabaseManager.Messages.ModifyDataResponse)
+{
+	Set pResponse = ##class(DatabaseManager.Messages.ModifyDataResponse).%New()
+	Set pResponse.response ="OK"
+   Quit $$$OK
+}
+
+Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pResponse As DatabaseManager.Messages.DeleteDataResponse)
+{
+	Set pResponse = ##class(DatabaseManager.Messages.DeleteDataResponse).%New()
+	Try {
+		Do ..checkTable(pRequest.tableName)
+		Set tableName = pRequest.tableName
+
+		Set SQLRequest = "Delete from "_..generatedData_"."_tableName_" where ID = "_pRequest.dataId
+		$$$TRACE(SQLRequest)
+		
+		Set statement=##class(%SQL.Statement).%New() 
+		Do statement.%Prepare(SQLRequest)
+		Set rs = statement.%Execute()
+		Do rs.%Next()
+	
+		Set pResponse.response = ..verifyResultSQL(rs)
+	}Catch ex {
+		Set pResponse.response = "Error : "_ex.DisplayString()
+	}
+   Quit $$$OK
+}
+
+Method verifyResultSQL(rs As %SQL.StatementResult) As %String
+{
+	If (rs.%SQLCODEGet()=0){
+		Return "OK with ID "_rs.%ROWIDGet()
+	}
+	
+	Return "Error with SQLCODE "_rs.%SQLCODEGet()_" : "_rs.%MessageGet()
 }
 
 Method insertData(tableName As %String, data As %ListOfObjects) As %SQL.StatementResult
 {
-	Set SQLRequest = ..getSQLRequest(tableName, data )
+	Set SQLRequest = ..getInsertSQLRequest(tableName, data )
 	$$$TRACE(SQLRequest)
 	
 	Set statement=##class(%SQL.Statement).%New() 
 	Do statement.%Prepare(SQLRequest)
 	Set rs = statement.%Execute()
-	do rs.%Next()
+	Do rs.%Next()
 
 	Quit rs
 }
 
-Method getSQLRequest(tableName As %String, data As %ListOfObjects) As %String
+Method getInsertSQLRequest(tableName As %String, data As %ListOfObjects) As %String
 {
 	Set SQLRequest = "Insert into "_tableName
 	Set input = " ("
@@ -85,37 +126,17 @@ Method getSQLRequest(tableName As %String, data As %ListOfObjects) As %String
 	Return SQLRequest_input_values
 }
 
+Method checkTable(tableName As %String) As %Status
+{
+	If '(##class(%Dictionary.CompiledClass).%ExistsId(..generatedClass_"."_tableName)){
+		Throw ##class(%Exception.General).%New("Table "_tableName_" doesn't exist")	
+	}
+	Quit $$$OK
+}
+
 Method checkPropertyExist(tableName As %String, propertyName As %String) As %Boolean
 {
 	Return ##class(%Dictionary.CompiledProperty).IDKEYExists(..generatedClass_"."_tableName,propertyName)
-}
-
-Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pResponse As DatabaseManager.Messages.SearchDataResponse)
-{
-	Set pResponse = ##class(DatabaseManager.Messages.SearchDataResponse).%New()
-	Set pResponse.response ="OK"
-   Quit $$$OK
-}
-
-Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As DatabaseManager.Messages.GetDataResponse)
-{
-	Set pResponse = ##class(DatabaseManager.Messages.GetDataResponse).%New()
-	Set pResponse.response ="OK"
-   Quit $$$OK
-}
-
-Method modifyData(pRequest As DatabaseManager.Messages.ModifyDataRequest, pResponse As DatabaseManager.Messages.ModifyDataResponse)
-{
-	Set pResponse = ##class(DatabaseManager.Messages.ModifyDataResponse).%New()
-	Set pResponse.response ="OK"
-   Quit $$$OK
-}
-
-Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pResponse As DatabaseManager.Messages.DeleteDataResponse)
-{
-	Set pResponse = ##class(DatabaseManager.Messages.DeleteDataResponse).%New()
-	Set pResponse.response ="OK"
-   Quit $$$OK
 }
 
 XData MessageMap
