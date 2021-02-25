@@ -3,7 +3,7 @@ Class DatabaseManager.Messages.GetTableResponse Extends DatabaseManager.Messages
 
 Property tableName As %String;
 
-Property columns As list Of DatabaseManager.Object.Columns;
+Property Properties As list Of DatabaseManager.Object.Property;
 
 Storage Default
 {
@@ -13,7 +13,7 @@ Storage Default
 <Value>tableName</Value>
 </Value>
 <Value name="2">
-<Value>columns</Value>
+<Value>Properties</Value>
 </Value>
 </Data>
 <DefaultData>GetTableResponseDefaultData</DefaultData>

@@ -24,9 +24,9 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 	Set cdef.Super = "%Persistent"
 
 	//Create class properties 
-	for i=1:1:pRequest.columns.Count(){
-		#Dim property As DatabaseManager.Object.Columns 
-		set property = pRequest.columns.GetAt(i)
+	for i=1:1:pRequest.properties.Count(){
+		#Dim property As DatabaseManager.Object.Property 
+		set property = pRequest.properties.GetAt(i)
 		set propertyName = property.name
 		set propertyType = property.type 
 
@@ -39,6 +39,10 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 		//if required
 		if (property.required) set pdef.Required =1 
 		
+		// if initialExpression
+		if ($L(property.initialExpression)) set pdef.InitialExpression = property.initialExpression
+
+
 		//insert property in the class Definition
 		Do cdef.Properties.Insert(pdef)
 
@@ -74,23 +78,25 @@ Method getTable(pRequest As DatabaseManager.Messages.GetTableRequest, pResponse 
 	Try{
 		set tableName = ..generatedClass_"."_ pRequest.tableName
 		
-		// Check if Table already exists 
+		// Check if Table already exists  
 		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)) {
-			set def=##class(%Dictionary.ClassDefinition).%OpenId(tableName)
+			set def=##class(%Dictionary.ClassDefinition).%OpenId(tableName) 
+			//For each properties, create a property 
 			for i=1:1:def.Properties.Count() {
-				set column = ##class(DatabaseManager.Object.Columns).%New()
-				set column.name = def.Properties.GetAt(i).Parameters.GetNext()
-				set column.type = "" 
-				set column.index = ""
-				set column.required = def.Properties.GetAt(i).Parameters.Required
-				
-				do pResponse.columns.Insert(column)
-			} 
+				$$$TRACE(def.Properties.GetAt(i).Name) 
+				set property = ##class(DatabaseManager.Object.Property).%New()
+				set property.name = def.Properties.GetAt(i).Name
+				set property.type =  def.Properties.GetAt(i).Type
+				set property.index = ""
+				set property.required = def.Properties.GetAt(i).Required
+				if (def.Properties.GetAt(i).InitialExpression '= "") set property.initialExpression = def.Properties.GetAt(i).InitialExpression
+				do pResponse.Properties.Insert(property)
+			}
+			set pResponse.tableName = pRequest.tableName
 		} else {
 			Throw ##class(%Exception.General).%New("Table does not exists.")
 		}
-
-		$$$TRACE(tableName)
+ 
 		
 		set pResponse.response ="OK"
 	}catch Exception{
@@ -127,13 +133,20 @@ Method getPropertyType(propertyType As %String, Output objectScriptType As %Stri
 	set property = $ZCVT(propertyType,"U")  
 	set objectScriptType = $CASE(property,
         "STRING":"%String",
+		"%STRING":"%String",
         "TIMESTAMP": "%TimeStamp",
+		"%TimeStamp":"%TimeStamp",
+		"%Date":"%Date",
         "DATE": "%Date",
+		"%Integer":"%Integer",
         "INTEGER": "%Integer",
         "INT": "%Integer",
+		"%Decimal":"%Decimal",
         "DECIMAL": "%Decimal",
         "FLOAT": "%Float",
+		"%Float":"%Float",
         "BOOLEAN": "%Boolean", 
+		"%Boolean":"%Boolean",
         : ""
         ) 
 	Quit $$$OK
