@@ -37,7 +37,48 @@ Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pRespo
 Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pResponse As DatabaseManager.Messages.SearchDataResponse)
 {
 	Set pResponse = ##class(DatabaseManager.Messages.SearchDataResponse).%New()
-	Set pResponse.response ="OK"
+	Try {
+		Do ..checkTable(pRequest.tableName)
+		Set tableName = pRequest.tableName
+		Set def=##class(%Dictionary.ClassDefinition).%OpenId(..generatedClass_"."_tableName)
+
+		If (pRequest.data.Count()=0){
+			Throw ##class(%Exception.General).%New("Error : no criteria")	
+		}
+		Set SQLRequest = "Select * from "_..generatedData_"."_tableName_" where "
+		
+		For i = 1:1:pRequest.data.Count() {
+			If (i>1){
+				Set SQLRequest = SQLRequest_" and"
+			}
+			Set SQLRequest = SQLRequest_pRequest.data.GetAt(i).name_" = '"_pRequest.data.GetAt(i).value_"'"
+		}
+
+		$$$TRACE(SQLRequest)
+
+		Set statement=##class(%SQL.Statement).%New() 
+		Do statement.%Prepare(SQLRequest)
+		Set rs = statement.%Execute()
+		While (rs.%Next()){
+			Set datas = ##class(DatabaseManager.Object.Datas).%New()
+			For i=1:1:def.Properties.Count() {
+				Set data = ##class(DatabaseManager.Object.Data).%New()
+				Set data.name = def.Properties.GetAt(i).Name
+				Set data.value = rs.%Get(def.Properties.GetAt(i).Name)
+
+				Set tsc = datas.data.Insert(data)
+			}
+			Set tsc = pResponse.datas.Insert(datas) If $$$ISERR(tsc) Throw tsc
+		}
+
+		If (pResponse.datas.Count()>0){
+			Set pResponse.response ="OK"
+		}Else{
+			Set pResponse.response = "Error : no data for criteria"
+		}
+	}Catch ex {
+		Set pResponse.response = "Error : "_ex.DisplayString()
+	}
    Quit $$$OK
 }
 
@@ -62,7 +103,6 @@ Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As
 				Set data.value = rs.%Get(def.Properties.GetAt(i).Name)
 				Set tsc = pResponse.data.Insert(data) If $$$ISERR(tsc) Throw tsc
 			}
-			
 			Set pResponse.response = "OK"
 		}Else{
 			Set pResponse.response = "Error data doesn't not exist"
