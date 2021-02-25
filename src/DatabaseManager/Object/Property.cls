@@ -5,8 +5,6 @@ Property name As %String;
 
 Property type As %String;
 
-Property index As %Boolean [ InitialExpression = 0 ];
-
 Property required As %Boolean [ InitialExpression = 0 ];
 
 Property initialExpression As %String;
@@ -21,12 +19,9 @@ Storage Default
 <Value>type</Value>
 </Value>
 <Value name="3">
-<Value>index</Value>
-</Value>
-<Value name="4">
 <Value>required</Value>
 </Value>
-<Value name="5">
+<Value name="4">
 <Value>initialExpression</Value>
 </Value>
 </Data>

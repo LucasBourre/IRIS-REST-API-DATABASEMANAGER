@@ -40,8 +40,7 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 		if (property.required) set pdef.Required =1 
 		
 		// if initialExpression
-		if ($L(property.initialExpression)) set pdef.InitialExpression = property.initialExpression
-
+		if ($L(property.initialExpression)) set pdef.InitialExpression = """"_property.initialExpression_""""
 
 		//insert property in the class Definition
 		Do cdef.Properties.Insert(pdef)
@@ -87,9 +86,8 @@ Method getTable(pRequest As DatabaseManager.Messages.GetTableRequest, pResponse 
 				set property = ##class(DatabaseManager.Object.Property).%New()
 				set property.name = def.Properties.GetAt(i).Name
 				set property.type =  def.Properties.GetAt(i).Type
-				set property.index = ""
 				set property.required = def.Properties.GetAt(i).Required
-				if (def.Properties.GetAt(i).InitialExpression '= "") set property.initialExpression = def.Properties.GetAt(i).InitialExpression
+				if (def.Properties.GetAt(i).InitialExpression '= """""") set property.initialExpression = def.Properties.GetAt(i).InitialExpression
 				do pResponse.Properties.Insert(property)
 			}
 			set pResponse.tableName = pRequest.tableName
