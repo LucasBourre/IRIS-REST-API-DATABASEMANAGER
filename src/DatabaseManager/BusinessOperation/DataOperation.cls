@@ -7,6 +7,8 @@ Parameter SETTINGS = "generatedClass";
 
 Property generatedClass As %String [ InitialExpression = "DatabaseManager.Datas" ];
 
+Property generatedData As %String [ InitialExpression = "DatabaseManager_Datas" ];
+
 Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pResponse As DatabaseManager.Messages.CreateDataResponse)
 {
 	Set pResponse = ##class(DatabaseManager.Messages.CreateDataResponse).%New()
@@ -24,43 +26,63 @@ Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pRespo
 				Throw ##class(%Exception.General).%New("Property "_propertyName_" of table "_tableName_" doesn't exist")	
 			}
 		}
+
+		set rs = ..insertData(..generatedData_"."_tableName, pRequest.data) 
 		
-		Set tsc = ..insertData(..generatedClass_"."_tableName, pRequest.data) 
-
-		Set pResponse.response ="OK"
-
+		If (rs.%SQLCODEGet()=0){
+			Set pResponse.response = "OK with ID "_rs.%ROWIDGet()
+		}else{
+			Set pResponse.response ="Error with SQLCODE "_rs.%SQLCODEGet()_" : "_rs.%MessageGet()
+		}
+		
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
 	}
 	Quit $$$OK
 }
 
-Method insertData(tableName As %String, data As %ListOfObjects) As %Status
+Method sendError(tsc As %Status)
 {
-	set SQLRequest = ..getSQLRequest(tableName, data )
-	$$$TRACE(SQLRequest)
+ 	Do DecomposeStatus^%apiOBJ(tsc, .err, "-d")
+	Set error = ""
+	For i=1:1:err {
+				Set error = error_err(i)
+	}
+	Set RequestNotSentException = ##class(%Exception.General).%New("","",,error)
+	Throw RequestNotSentException
+}
 
-	quit $$$OK
+Method insertData(tableName As %String, data As %ListOfObjects) As %SQL.StatementResult
+{
+	Set SQLRequest = ..getSQLRequest(tableName, data )
+	$$$TRACE(SQLRequest)
+	
+	Set statement=##class(%SQL.Statement).%New() 
+	Do statement.%Prepare(SQLRequest)
+	Set rs = statement.%Execute()
+	do rs.%Next()
+
+	Quit rs
 }
 
 Method getSQLRequest(tableName As %String, data As %ListOfObjects) As %String
 {
-	set SQLRequest = "Insert into "_tableName
-	set input = "("
-	set values = "("
+	Set SQLRequest = "Insert into "_tableName
+	Set input = " ("
+	Set values = " values ("
 
 	For i = 1:1:data.Count() {
-		if (i = data.Count()){
-			set input = input.GetAt(i).name_")"
-			set values = input.GetAt(i).value_")"
-		}else{
-			set input = input.GetAt(i).name_","
-			set values = input.GetAt(i).value_","
+		If (i = data.Count()){
+			Set input = input_data.GetAt(i).name_")"
+			Set values = values_"'"_data.GetAt(i).value_"')"
+		}Else{
+			Set input = input_data.GetAt(i).name_","
+			Set values = values_"'"_data.GetAt(i).value_"',"
 		}
 	}
 	
 
-	Return SQLRequest
+	Return SQLRequest_input_values
 }
 
 Method checkPropertyExist(tableName As %String, propertyName As %String) As %Boolean
