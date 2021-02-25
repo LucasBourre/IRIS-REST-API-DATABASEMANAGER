@@ -3,38 +3,96 @@ Class DatabaseManager.BusinessOperation.DataOperation Extends Ens.BusinessOperat
 
 Parameter INVOCATION = "Queue";
 
+Parameter SETTINGS = "generatedClass";
+
+Property generatedClass As %String [ InitialExpression = "DatabaseManager.Datas" ];
+
 Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pResponse As DatabaseManager.Messages.CreateDataResponse)
 {
-	set pResponse = ##class(DatabaseManager.Messages.CreateDataResponse).%New()
-	set pResponse.response ="OK"
-   Quit $$$OK
+	Set pResponse = ##class(DatabaseManager.Messages.CreateDataResponse).%New()
+	Try {
+	
+		Set tableName = pRequest.tableName
+
+		If '(##class(%Dictionary.CompiledClass).%ExistsId(..generatedClass_"."_tableName)){
+			Throw ##class(%Exception.General).%New("Table "_tableName_" doesn't exist")	
+		}
+
+		For i = 1:1:pRequest.data.Count() {
+			Set propertyName = pRequest.data.GetAt(i).name
+			If '(..checkPropertyExist(tableName,propertyName)){
+				Throw ##class(%Exception.General).%New("Property "_propertyName_" of table "_tableName_" doesn't exist")	
+			}
+		}
+		
+		Set tsc = ..insertData(..generatedClass_"."_tableName, pRequest.data) 
+
+		Set pResponse.response ="OK"
+
+	}Catch ex {
+		Set pResponse.response = "Error : "_ex.DisplayString()
+	}
+	Quit $$$OK
+}
+
+Method insertData(tableName As %String, data As %ListOfObjects) As %Status
+{
+	set SQLRequest = ..getSQLRequest(tableName, data )
+	$$$TRACE(SQLRequest)
+
+	quit $$$OK
+}
+
+Method getSQLRequest(tableName As %String, data As %ListOfObjects) As %String
+{
+	set SQLRequest = "Insert into "_tableName
+	set input = "("
+	set values = "("
+
+	For i = 1:1:data.Count() {
+		if (i = data.Count()){
+			set input = input.GetAt(i).name_")"
+			set values = input.GetAt(i).value_")"
+		}else{
+			set input = input.GetAt(i).name_","
+			set values = input.GetAt(i).value_","
+		}
+	}
+	
+
+	Return SQLRequest
+}
+
+Method checkPropertyExist(tableName As %String, propertyName As %String) As %Boolean
+{
+	Return ##class(%Dictionary.CompiledProperty).IDKEYExists(..generatedClass_"."_tableName,propertyName)
 }
 
 Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pResponse As DatabaseManager.Messages.SearchDataResponse)
 {
-	set pResponse = ##class(DatabaseManager.Messages.SearchDataResponse).%New()
-	set pResponse.response ="OK"
+	Set pResponse = ##class(DatabaseManager.Messages.SearchDataResponse).%New()
+	Set pResponse.response ="OK"
    Quit $$$OK
 }
 
 Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As DatabaseManager.Messages.GetDataResponse)
 {
-	set pResponse = ##class(DatabaseManager.Messages.GetDataResponse).%New()
-	set pResponse.response ="OK"
+	Set pResponse = ##class(DatabaseManager.Messages.GetDataResponse).%New()
+	Set pResponse.response ="OK"
    Quit $$$OK
 }
 
 Method modifyData(pRequest As DatabaseManager.Messages.ModifyDataRequest, pResponse As DatabaseManager.Messages.ModifyDataResponse)
 {
-	set pResponse = ##class(DatabaseManager.Messages.ModifyDataResponse).%New()
-	set pResponse.response ="OK"
+	Set pResponse = ##class(DatabaseManager.Messages.ModifyDataResponse).%New()
+	Set pResponse.response ="OK"
    Quit $$$OK
 }
 
 Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pResponse As DatabaseManager.Messages.DeleteDataResponse)
 {
-	set pResponse = ##class(DatabaseManager.Messages.DeleteDataResponse).%New()
-	set pResponse.response ="OK"
+	Set pResponse = ##class(DatabaseManager.Messages.DeleteDataResponse).%New()
+	Set pResponse.response ="OK"
    Quit $$$OK
 }
 
