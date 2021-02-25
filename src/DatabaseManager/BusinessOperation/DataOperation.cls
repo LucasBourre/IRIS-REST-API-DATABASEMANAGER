@@ -47,8 +47,28 @@ Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As
 	Try {
 		Do ..checkTable(pRequest.tableName)
 		Set tableName = pRequest.tableName
+		Set def=##class(%Dictionary.ClassDefinition).%OpenId(..generatedClass_"."_tableName)
 
-		Set pResponse.response ="OK"	
+		Set SQLRequest = "Select * from "_..generatedData_"."_tableName_" where ID = "_pRequest.dataId
+		$$$TRACE(SQLRequest)
+		
+		Set statement=##class(%SQL.Statement).%New() 
+		Do statement.%Prepare(SQLRequest)
+		Set rs = statement.%Execute()
+		If (rs.%Next()){
+			For i=1:1:def.Properties.Count() {
+				Set data = ##class(DatabaseManager.Object.Data).%New()
+				Set data.name = def.Properties.GetAt(i).Name
+				Set data.value = rs.%Get(def.Properties.GetAt(i).Name)
+				Set tsc = pResponse.data.Insert(data) If $$$ISERR(tsc) Throw tsc
+			}
+			
+			Set pResponse.response = "OK"
+		}Else{
+			Set pResponse.response = "Error data doesn't not exist"
+		}
+		
+	
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
 	}
