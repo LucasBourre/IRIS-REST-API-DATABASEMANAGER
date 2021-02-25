@@ -67,7 +67,55 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pResponse As DatabaseManager.Messages.ModifyTableResponse)
 {
 	set pResponse = ##class(DatabaseManager.Messages.ModifyTableResponse).%New()
-	set pResponse.response ="OK"
+	Try{
+		set tableName = ..generatedClass_"."_ pRequest.tableName
+		
+		// Check if Table already exists  
+		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)) {
+			set def=##class(%Dictionary.ClassDefinition).%OpenId(tableName) 
+			
+
+			for i=1:1:pRequest.properties.Count(){
+				#Dim property As DatabaseManager.Object.Property
+				set property = pRequest.properties.GetAt(i)
+
+				set foundPropertyIndex = 0
+				for j=1:1:def.Properties.Count(){
+					#Dim currentProperty As %Dictionary.PropertyDefinition
+					set currentProperty = def.Properties.GetAt(j)
+					if (property.name = currentProperty.Name) set foundPropertyIndex =1
+				}
+
+				if (foundPropertyIndex =0){
+ 					throw ##class(%Exception.General).%New("The property "_property.name_" does not exist.")
+				}else{
+					// found property , we try to modify it
+					do ..getPropertyType(property.type,.propertyObjectScript) 
+					if ($L(propertyObjectScript)=0) Throw ##class(%Exception.General).%New("incorrect type "_property.type_" .") 
+					$$$TRACE(propertyObjectScript)
+					set currentProperty.Type = propertyObjectScript
+					set currentProperty.Required = property.required 
+					if ($L(property.initialExpression)) set currentProperty.InitialExpression = """"_property.initialExpression_""""
+					//try to save the data
+					set tSC = currentProperty.%Save() 
+					$$$TRACE(tSC)
+					if $$$ISERR(tSC) throw ##class(%Exception.General).%New("cannot save property : "_tSC)
+				}
+			}
+ 
+			
+			set tSC = def.%Save() 
+			$$$TRACE(tSC)
+		} else {
+			Throw ##class(%Exception.General).%New("Table does not exists.")
+		}
+ 
+		
+		set pResponse.response ="OK"
+	}catch Exception{
+		set pResponse.response = Exception.DisplayString() 
+	} 
+	
    Quit $$$OK
 }
 
@@ -82,7 +130,6 @@ Method getTable(pRequest As DatabaseManager.Messages.GetTableRequest, pResponse 
 			set def=##class(%Dictionary.ClassDefinition).%OpenId(tableName) 
 			//For each properties, create a property 
 			for i=1:1:def.Properties.Count() {
-				$$$TRACE(def.Properties.GetAt(i).Name) 
 				set property = ##class(DatabaseManager.Object.Property).%New()
 				set property.name = def.Properties.GetAt(i).Name
 				set property.type =  def.Properties.GetAt(i).Type
@@ -112,6 +159,10 @@ Method deleteTable(pRequest As DatabaseManager.Messages.DeleteTableRequest, pRes
 
 		// Check if Table already exists 
 		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)) {
+			// we truncate the table
+			do $SYSTEM.SQL.Execute("TRUNCATE TABLE "_tableName)
+
+			//we delete the class and the definition
 			do ##class(%Dictionary.CompiledClass).%DeleteId(tableName)
 			do ##class(%Dictionary.ClassDefinition).%DeleteId(tableName)
 		} else {

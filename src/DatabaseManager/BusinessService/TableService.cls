@@ -9,9 +9,9 @@ Method OnProcessInput(pDemande As %RegisteredObject, Output pResponse As %Regist
 
         set sc = $CASE(pHint,
         "createTable": ..CreateTable(pDemande,.pResponse),
-        "modifyTable": ..CreateTable(pDemande,.pResponse),
-        "getTable": ..CreateTable(pDemande,.pResponse),
-        "deleteTable": ..CreateTable(pDemande,.pResponse),
+        "modifyTable": ..ModifyTable(pDemande,.pResponse),
+        "getTable": ..GetTable(pDemande,.pResponse),
+        "deleteTable": ..DeleteTable(pDemande,.pResponse),
         : $$$ERROR($$$NotImplemented)
         )
         Quit sc

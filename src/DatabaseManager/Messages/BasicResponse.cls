@@ -1,7 +1,7 @@
 Class DatabaseManager.Messages.BasicResponse Extends Ens.Response
 {
 
-Property response As %String(MAXLEN = 300);
+Property response As %String(MAXLEN = 500);
 
 Storage Default
 {

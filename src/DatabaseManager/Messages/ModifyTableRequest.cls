@@ -3,7 +3,7 @@ Class DatabaseManager.Messages.ModifyTableRequest Extends DatabaseManager.Messag
 
 Property tableName As %String;
 
-Property Properties As list Of DatabaseManager.Object.Property;
+Property properties As list Of DatabaseManager.Object.Property;
 
 Storage Default
 {
@@ -13,7 +13,7 @@ Storage Default
 <Value>tableName</Value>
 </Value>
 <Value name="2">
-<Value>Properties</Value>
+<Value>properties</Value>
 </Value>
 </Data>
 <DefaultData>ModifyTableRequestDefaultData</DefaultData>
