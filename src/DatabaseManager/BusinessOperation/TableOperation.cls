@@ -10,26 +10,33 @@ Property generatedClass As %String [ InitialExpression = "DatabaseManager.Datas"
 Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pResponse As DatabaseManager.Messages.CreateTableResponse)
 {
 	set pResponse = ##class(DatabaseManager.Messages.CreateTableResponse).%New()
-	set tableName = ..generatedClass_"."_ pRequest.tableName
-
-	//TODO Check if Class already exists
-
-
-	// If not , create class definition
-	Set cdef = ##class(%Dictionary.ClassDefinition).%New(tableName)
-	
-	//Super of the class , to be persistent
-	Set cdef.Super = "%Persistent,%Populate"
-
-	// create class properties 
-	for i=1:1:pRequest.columns.Count(){
-		set propertyName = pRequest.columns.GetAt(i).name
-
-
-		Set pdef = ##class(%Dictionary.PropertyDefinition).%New(tableName_":"_propertyName) 
+	Try{
 		
-		//TODO  : Determine the type of the property
-		Set pdef.Type="%String"
+		set tableName = ..generatedClass_"."_ pRequest.tableName
+
+		// Check if Class already exists 
+		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)){
+			throw ##class(%Exception.General).%New("class "_tableName_" already exists")
+		}
+
+	//Create class definitionno
+	Set cdef = ##class(%Dictionary.ClassDefinition).%New(tableName) 
+	Set cdef.Super = "%Persistent"
+
+	//Create class properties 
+	for i=1:1:pRequest.columns.Count(){
+		#Dim property As DatabaseManager.Object.Columns 
+		set property = pRequest.columns.GetAt(1)
+		set propertyName = property.name
+		set propertyType = property.type
+
+		//classDefinition
+		Set pdef = ##class(%Dictionary.PropertyDefinition).%New(tableName_":"_propertyName)  
+		do ..getPropertyType(propertyType,.propertyObjectScript) 
+		if ($L(propertyObjectScript)=0) Throw ##class(%Exception.General).%New("incorrect type "_propertyType_" .") 
+		Set pdef.Type=propertyObjectScript
+		
+		if (property.required) set pdef.Required =1 
 		
 		//insert property in the class Definition
 		Do cdef.Properties.Insert(pdef)
@@ -38,11 +45,18 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
   
 
 	// save the class definition object
-	set tSC = cdef.%Save()
+	set tSC = cdef.%Save() 
 	$$$TRACE(tSC)
-	Do $system.OBJ.Compile(tableName) 
-	
-	set pResponse.response ="OK"
+	if (tSC){
+		Do $system.OBJ.Compile(tableName) 
+		set pResponse.response ="OK Table created."
+	}else{
+		Throw ##class(%Exception.General).%New("Error Compiling Class.")
+	}
+
+	}catch exception{
+		set pResponse.response = exception.Name
+	}
    Quit $$$OK
 }
 
@@ -63,8 +77,41 @@ Method getTable(pRequest As DatabaseManager.Messages.GetTableRequest, pResponse 
 Method deleteTable(pRequest As DatabaseManager.Messages.DeleteTableRequest, pResponse As DatabaseManager.Messages.DeleteTableResponse)
 {
 	set pResponse = ##class(DatabaseManager.Messages.DeleteTableResponse).%New()
-	set pResponse.response ="OK"
+	Try{
+
+		set tableName = ..generatedClass_"."_ pRequest.tableName
+
+		// Check if Table already exists 
+		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)) {
+			do ##class(%Dictionary.CompiledClass).%DeleteId(tableName)
+			do ##class(%Dictionary.ClassDefinition).%DeleteId(tableName)
+		} else {
+			Throw ##class(%Exception.General).%New("Table does not exists.")
+		}
+
+
+	set pResponse.response ="OK table deleted."
+	}catch Exception{
+		set pResponse.response = Exception.Name 
+	}
    Quit $$$OK
+}
+
+Method getPropertyType(propertyType As %String, Output objectScriptType As %String) As %Status
+{
+	set property = $ZCVT(propertyType,"U")  
+	set objectScriptType = $CASE(property,
+        "STRING":"%String",
+        "TIMESTAMP": "%TimeStamp",
+        "DATE": "%Date",
+        "INTEGER": "%Integer",
+        "INT": "%Integer",
+        "DECIMAL": "%Decimal",
+        "FLOAT": "%Float",
+        "BOOLEAN": "%Boolean", 
+        : ""
+        ) 
+	Quit $$$OK
 }
 
 XData MessageMap

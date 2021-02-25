@@ -3,7 +3,7 @@ Class DatabaseManager.Messages.GetTableResponse Extends DatabaseManager.Messages
 
 Property tableName As %String;
 
-Property columns As list Of Object.Columns;
+Property columns As list Of DatabaseManager.Object.Columns;
 
 Storage Default
 {

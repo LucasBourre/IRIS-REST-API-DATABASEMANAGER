@@ -1,11 +1,9 @@
-Class Object.Columns Extends (%SerialObject, %XML.Adaptor)
+Class DatabaseManager.Object.Columns Extends (%SerialObject, %XML.Adaptor)
 {
 
 Property name As %String;
 
 Property type As %String;
-
-Property maxlen As %Integer [ InitialExpression = 50 ];
 
 Property index As %Boolean [ InitialExpression = 0 ];
 
@@ -31,7 +29,7 @@ Storage Default
 </Value>
 </Data>
 <State>ColumnsState</State>
-<StreamLocation>^Object.ColumnsS</StreamLocation>
+<StreamLocation>^DatabaseManager.Obj585.ColumnsS</StreamLocation>
 <Type>%Storage.Serial</Type>
 }
 

@@ -1,4 +1,4 @@
-Class Object.Data Extends (%SerialObject, %XML.Adaptor)
+Class DatabaseManager.Object.Data Extends (%SerialObject, %XML.Adaptor)
 {
 
 Property name As %String;
@@ -16,7 +16,7 @@ Storage Default
 </Value>
 </Data>
 <State>DataState</State>
-<StreamLocation>^Object.DataS</StreamLocation>
+<StreamLocation>^DatabaseManager.Object.DataS</StreamLocation>
 <Type>%Storage.Serial</Type>
 }
 

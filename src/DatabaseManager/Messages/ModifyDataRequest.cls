@@ -3,7 +3,7 @@ Class DatabaseManager.Messages.ModifyDataRequest Extends DatabaseManager.Message
 
 Property tableName As %String;
 
-Property data As list Of Object.Data;
+Property data As list Of DatabaseManager.Object.Data;
 
 Storage Default
 {
