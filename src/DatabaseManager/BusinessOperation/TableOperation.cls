@@ -28,8 +28,7 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 		#Dim property As DatabaseManager.Object.Columns 
 		set property = pRequest.columns.GetAt(i)
 		set propertyName = property.name
-		set propertyType = property.type
-		$$$TRACE(propertyName)
+		set propertyType = property.type 
 
 		//classDefinition
 		Set pdef = ##class(%Dictionary.PropertyDefinition).%New(tableName_":"_propertyName)  
@@ -37,7 +36,7 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 		if ($L(propertyObjectScript)=0) Throw ##class(%Exception.General).%New("incorrect type "_propertyType_" .") 
 		Set pdef.Type=propertyObjectScript
 		
-		$$$TRACE(propertyObjectScript)
+		//if required
 		if (property.required) set pdef.Required =1 
 		
 		//insert property in the class Definition
@@ -72,7 +71,31 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
 Method getTable(pRequest As DatabaseManager.Messages.GetTableRequest, pResponse As DatabaseManager.Messages.GetTableResponse)
 {
 	set pResponse = ##class(DatabaseManager.Messages.GetTableResponse).%New()
-	set pResponse.response ="OK"
+	Try{
+		set tableName = ..generatedClass_"."_ pRequest.tableName
+		
+		// Check if Table already exists 
+		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)) {
+			set def=##class(%Dictionary.ClassDefinition).%OpenId(tableName)
+			for i=1:1:def.Properties.Count() {
+				set column = ##class(DatabaseManager.Object.Columns).%New()
+				set column.name = def.Properties.GetAt(i).Parameters.GetNext()
+				set column.type = "" 
+				set column.index = ""
+				set column.required = def.Properties.GetAt(i).Parameters.Required
+				
+				do pResponse.columns.Insert(column)
+			} 
+		} else {
+			Throw ##class(%Exception.General).%New("Table does not exists.")
+		}
+
+		$$$TRACE(tableName)
+		
+		set pResponse.response ="OK"
+	}catch Exception{
+		set pResponse.response = Exception.Name 
+	} 
    Quit $$$OK
 }
 
