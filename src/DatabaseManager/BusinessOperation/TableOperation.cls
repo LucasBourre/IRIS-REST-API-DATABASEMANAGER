@@ -26,9 +26,10 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 	//Create class properties 
 	for i=1:1:pRequest.columns.Count(){
 		#Dim property As DatabaseManager.Object.Columns 
-		set property = pRequest.columns.GetAt(1)
+		set property = pRequest.columns.GetAt(i)
 		set propertyName = property.name
 		set propertyType = property.type
+		$$$TRACE(propertyName)
 
 		//classDefinition
 		Set pdef = ##class(%Dictionary.PropertyDefinition).%New(tableName_":"_propertyName)  
@@ -36,6 +37,7 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 		if ($L(propertyObjectScript)=0) Throw ##class(%Exception.General).%New("incorrect type "_propertyType_" .") 
 		Set pdef.Type=propertyObjectScript
 		
+		$$$TRACE(propertyObjectScript)
 		if (property.required) set pdef.Required =1 
 		
 		//insert property in the class Definition
