@@ -146,7 +146,11 @@ Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pRespo
 		
 		Set rs = ..sqlPrepare(SQLRequest)
 		Do rs.%Next()
-		Set pResponse.response = ..verifyResultSQL(rs)
+		if (rs.%SQLCODEGet()=100){
+			set pResponse.response = "No data for ID "_pRequest.dataId
+		}else{
+			Set pResponse.response = ..verifyResultSQL(rs)
+		}
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
 	}
