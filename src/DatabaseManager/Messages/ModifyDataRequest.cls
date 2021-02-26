@@ -3,6 +3,8 @@ Class DatabaseManager.Messages.ModifyDataRequest Extends DatabaseManager.Message
 
 Property tableName As %String;
 
+Property dataId As %Integer;
+
 Property data As list Of DatabaseManager.Object.Data;
 
 Storage Default
@@ -13,6 +15,9 @@ Storage Default
 <Value>tableName</Value>
 </Value>
 <Value name="2">
+<Value>dataId</Value>
+</Value>
+<Value name="3">
 <Value>data</Value>
 </Value>
 </Data>

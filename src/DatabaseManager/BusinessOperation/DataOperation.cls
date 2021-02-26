@@ -118,7 +118,33 @@ Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As
 Method modifyData(pRequest As DatabaseManager.Messages.ModifyDataRequest, pResponse As DatabaseManager.Messages.ModifyDataResponse)
 {
 	Set pResponse = ##class(DatabaseManager.Messages.ModifyDataResponse).%New()
-	Set pResponse.response ="OK"
+	Try {
+		Do ..checkTable(pRequest.tableName)
+		Set tableName = pRequest.tableName
+
+		If '(pRequest.dataId > 0){
+			Throw ##class(%Exception.General).%New("Error : field dataId required")	
+		}
+
+		Set SQLRequest = "Update "_..generatedData_"."_tableName_" set"
+		For i = 1:1:pRequest.data.Count() {
+			Set SQLRequest = SQLRequest_" "_pRequest.data.GetAt(i).name_" = '"_pRequest.data.GetAt(i).value_"'"
+			If (i<pRequest.data.Count()){
+				Set SQLRequest = SQLRequest_","
+			}
+		}
+		Set SQLRequest = SQLRequest_" where ID = "_pRequest.dataId
+		$$$TRACE(SQLRequest)
+		
+		Set statement=##class(%SQL.Statement).%New() 
+		Do statement.%Prepare(SQLRequest)
+		Set rs = statement.%Execute()
+		Do rs.%Next()
+	
+		Set pResponse.response = ..verifyResultSQL(rs)
+	}Catch ex {
+		Set pResponse.response = "Error : "_ex.DisplayString()
+	}
    Quit $$$OK
 }
 
