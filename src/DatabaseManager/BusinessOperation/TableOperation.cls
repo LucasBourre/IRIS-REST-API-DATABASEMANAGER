@@ -110,7 +110,7 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
 			
 			set tSC = def.%Save()  
 			
-			Do $system.OBJ.Compile(tableName) 
+			Do $System.OBJ.Compile(tableName) 
 		} else {
 			Throw ##class(%Exception.General).%New("Table does not exists.")
 		}
