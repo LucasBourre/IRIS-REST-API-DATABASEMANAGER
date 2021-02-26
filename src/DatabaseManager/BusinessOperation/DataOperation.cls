@@ -58,6 +58,10 @@ Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pRespo
 		Set rs = ..sqlPrepare(SQLRequest)
 		While (rs.%Next()){
 			Set datas = ##class(DatabaseManager.Object.Datas).%New()
+			Set data = ##class(DatabaseManager.Object.Data).%New()
+			Set data.name = "ID"
+			Set data.value = rs.%Get("ID")
+			Set tsc = datas.data.Insert(data)
 			For i=1:1:def.Properties.Count() {
 				Set data = ##class(DatabaseManager.Object.Data).%New()
 				Set data.name = def.Properties.GetAt(i).Name
