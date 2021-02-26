@@ -13,7 +13,7 @@ It uses POST , GET , PUT and DELETE methods.
 zpm:USER>install iris-rest-api-databasemanager
 
 On the Administration Portal, make sure you have services and operations in the interoperabilty production such as below on USER namespace: 
-![](documents/ProductionCapture.PNG)
+![](https://raw.githubusercontent.com/LucasBourre/IRIS-REST-API-DATABASEMANAGER/master/documents/ProductionCapture.PNG)
 
  
 ## Installation with Docker
@@ -45,13 +45,13 @@ $ docker-compose up -d
 Docker default port are 9000 , 9001 and 9002.
 There is a POSTMAN collection in the project in order to test the application that will allow you to create some Tables and Datas : 
 
-![postmanCapture.PNG](documents/postmanCapture.PNG)
+![postmanCapture.PNG](https://raw.githubusercontent.com/LucasBourre/IRIS-REST-API-DATABASEMANAGER/master/documents/postmanCapture.PNG)
 
 Here are different types available :
 String , Date , Integer (Int), Decimal, Float, TimeStamp , Boolean
 
 Datas can be accessed from SQL Management Portal, with a prefix "DatabaseManager_Datas" : 
-![SQLCapture.PNG](documents/SQLCapture.PNG)
+![SQLCapture.PNG](https://raw.githubusercontent.com/LucasBourre/IRIS-REST-API-DATABASEMANAGER/master/documents/SQLCapture.PNG)
  
 ## Next Features
 What we plan to add on this project:
