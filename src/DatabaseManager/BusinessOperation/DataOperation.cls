@@ -23,9 +23,10 @@ Method createData(pRequest As DatabaseManager.Messages.CreateDataRequest, pRespo
 				Throw ##class(%Exception.General).%New("Property "_propertyName_" of table "_tableName_" doesn't exist")	
 			}
 		}
-
-		Set rs = ..insertData(..generatedData_"."_tableName, pRequest.data) 
-		
+		Set SQLRequest = ..getInsertSQLRequest(..generatedData_"."_tableName, pRequest.data)
+		$$$TRACE(SQLRequest)
+		Set rs = ..sqlPrepare(SQLRequest)
+		Do rs.%Next()
 		Set pResponse.response = ..verifyResultSQL(rs)
 		
 	}Catch ex {
@@ -53,12 +54,8 @@ Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pRespo
 			}
 			Set SQLRequest = SQLRequest_pRequest.data.GetAt(i).name_" = '"_pRequest.data.GetAt(i).value_"'"
 		}
-
 		$$$TRACE(SQLRequest)
-
-		Set statement=##class(%SQL.Statement).%New() 
-		Do statement.%Prepare(SQLRequest)
-		Set rs = statement.%Execute()
+		Set rs = ..sqlPrepare(SQLRequest)
 		While (rs.%Next()){
 			Set datas = ##class(DatabaseManager.Object.Datas).%New()
 			For i=1:1:def.Properties.Count() {
@@ -93,9 +90,7 @@ Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As
 		Set SQLRequest = "Select * from "_..generatedData_"."_tableName_" where ID = "_pRequest.dataId
 		$$$TRACE(SQLRequest)
 		
-		Set statement=##class(%SQL.Statement).%New() 
-		Do statement.%Prepare(SQLRequest)
-		Set rs = statement.%Execute()
+		Set rs = ..sqlPrepare(SQLRequest)
 		If (rs.%Next()){
 			For i=1:1:def.Properties.Count() {
 				Set data = ##class(DatabaseManager.Object.Data).%New()
@@ -107,8 +102,6 @@ Method getData(pRequest As DatabaseManager.Messages.GetDataRequest, pResponse As
 		}Else{
 			Set pResponse.response = "Error data doesn't not exist"
 		}
-		
-	
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
 	}
@@ -125,22 +118,11 @@ Method modifyData(pRequest As DatabaseManager.Messages.ModifyDataRequest, pRespo
 		If '(pRequest.dataId > 0){
 			Throw ##class(%Exception.General).%New("Error : field dataId required")	
 		}
-
-		Set SQLRequest = "Update "_..generatedData_"."_tableName_" set"
-		For i = 1:1:pRequest.data.Count() {
-			Set SQLRequest = SQLRequest_" "_pRequest.data.GetAt(i).name_" = '"_pRequest.data.GetAt(i).value_"'"
-			If (i<pRequest.data.Count()){
-				Set SQLRequest = SQLRequest_","
-			}
-		}
-		Set SQLRequest = SQLRequest_" where ID = "_pRequest.dataId
+		Set SQLRequest = ..getUpdateSQLRequest(tableName, pRequest)
 		$$$TRACE(SQLRequest)
 		
-		Set statement=##class(%SQL.Statement).%New() 
-		Do statement.%Prepare(SQLRequest)
-		Set rs = statement.%Execute()
+		Set rs = ..sqlPrepare(SQLRequest)
 		Do rs.%Next()
-	
 		Set pResponse.response = ..verifyResultSQL(rs)
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
@@ -158,11 +140,8 @@ Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pRespo
 		Set SQLRequest = "Delete from "_..generatedData_"."_tableName_" where ID = "_pRequest.dataId
 		$$$TRACE(SQLRequest)
 		
-		Set statement=##class(%SQL.Statement).%New() 
-		Do statement.%Prepare(SQLRequest)
-		Set rs = statement.%Execute()
+		Set rs = ..sqlPrepare(SQLRequest)
 		Do rs.%Next()
-	
 		Set pResponse.response = ..verifyResultSQL(rs)
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
@@ -175,21 +154,21 @@ Method verifyResultSQL(rs As %SQL.StatementResult) As %String
 	If (rs.%SQLCODEGet()=0){
 		Return "OK with ID "_rs.%ROWIDGet()
 	}
-	
 	Return "Error with SQLCODE "_rs.%SQLCODEGet()_" : "_rs.%MessageGet()
 }
 
-Method insertData(tableName As %String, data As %ListOfObjects) As %SQL.StatementResult
+Method getUpdateSQLRequest(tableName As %String, pRequest As DatabaseManager.Messages.ModifyDataRequest) As %String
 {
-	Set SQLRequest = ..getInsertSQLRequest(tableName, data )
-	$$$TRACE(SQLRequest)
-	
-	Set statement=##class(%SQL.Statement).%New() 
-	Do statement.%Prepare(SQLRequest)
-	Set rs = statement.%Execute()
-	Do rs.%Next()
+	Set SQLRequest = "Update "_..generatedData_"."_tableName_" set"
+	For i = 1:1:pRequest.data.Count() {
+		Set SQLRequest = SQLRequest_" "_pRequest.data.GetAt(i).name_" = '"_pRequest.data.GetAt(i).value_"'"
+		If (i<pRequest.data.Count()){
+			Set SQLRequest = SQLRequest_","
+		}
+	}
+	Set SQLRequest = SQLRequest_" where ID = "_pRequest.dataId
 
-	Quit rs
+	Return SQLRequest
 }
 
 Method getInsertSQLRequest(tableName As %String, data As %ListOfObjects) As %String
@@ -208,7 +187,6 @@ Method getInsertSQLRequest(tableName As %String, data As %ListOfObjects) As %Str
 		}
 	}
 	
-
 	Return SQLRequest_input_values
 }
 
@@ -223,6 +201,14 @@ Method checkTable(tableName As %String) As %Status
 Method checkPropertyExist(tableName As %String, propertyName As %String) As %Boolean
 {
 	Return ##class(%Dictionary.CompiledProperty).IDKEYExists(..generatedClass_"."_tableName,propertyName)
+}
+
+Method sqlPrepare(SQLRequest As %String) As %SQL.StatementResult
+{
+	Set statement=##class(%SQL.Statement).%New() 
+	Do statement.%Prepare(SQLRequest)
+	Set rs = statement.%Execute()
+	Return rs
 }
 
 XData MessageMap
