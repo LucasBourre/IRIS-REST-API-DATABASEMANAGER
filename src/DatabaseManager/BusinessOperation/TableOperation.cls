@@ -7,6 +7,8 @@ Parameter SETTINGS = "generatedClass";
 
 Property generatedClass As %String [ InitialExpression = "DatabaseManager.Datas" ];
 
+Property generatedData As %String [ InitialExpression = "DatabaseManager_Datas" ];
+
 Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pResponse As DatabaseManager.Messages.CreateTableResponse)
 {
 	set pResponse = ##class(DatabaseManager.Messages.CreateTableResponse).%New()
@@ -90,7 +92,7 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
 				}
 
 				if (foundPropertyIndex =0){
- 					throw ##class(%Exception.General).%New("The property "_property.name_" does not exist.")
+ 					throw ##class(%Exception.General).%New("The property "_property.name_" does not exist.") 
 				}else{
 					// found property , we try to modify it
 					do ..getPropertyType(property.type,.propertyObjectScript) 
@@ -100,14 +102,13 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
 					set currentProperty.Required = property.required 
 					if ($L(property.initialExpression)) set currentProperty.InitialExpression = """"_property.initialExpression_""""
 					//try to save the data
-					set tSC = currentProperty.%Save() 
-					$$$TRACE(tSC)
+					set tSC = currentProperty.%Save()  
 					if $$$ISERR(tSC) throw ##class(%Exception.General).%New("cannot save property : "_tSC)
 				}
 			}
  
 			
-			set tSC = def.%Save() 
+			set tSC = def.%Save()  
 			
 			Do $system.OBJ.Compile(tableName) 
 		} else {
@@ -160,11 +161,12 @@ Method deleteTable(pRequest As DatabaseManager.Messages.DeleteTableRequest, pRes
 	Try{
 
 		set tableName = ..generatedClass_"."_ pRequest.tableName
+		set dataName = ..generatedData_"."_pRequest.tableName
 
 		// Check if Table already exists 
 		if (##class(%Dictionary.CompiledClass).%ExistsId(tableName)) {
 			// we truncate the table
-			do $SYSTEM.SQL.Execute("TRUNCATE TABLE "_tableName)
+			do $SYSTEM.SQL.Execute("TRUNCATE TABLE "_dataName)
 
 			//we delete the class and the definition
 			do ##class(%Dictionary.CompiledClass).%DeleteId(tableName)
