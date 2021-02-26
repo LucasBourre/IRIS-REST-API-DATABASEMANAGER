@@ -19,7 +19,7 @@ Method createTable(pRequest As DatabaseManager.Messages.CreateTableRequest, pRes
 			throw ##class(%Exception.General).%New("class "_tableName_" already exists")
 		}
 
-	//Create class definitionno
+	//Create class definition
 	Set cdef = ##class(%Dictionary.ClassDefinition).%New(tableName) 
 	Set cdef.Super = "%Persistent"
 
@@ -108,7 +108,8 @@ Method modifyTable(pRequest As DatabaseManager.Messages.ModifyTableRequest, pRes
  
 			
 			set tSC = def.%Save() 
-			$$$TRACE(tSC)
+			
+			Do $system.OBJ.Compile(tableName) 
 		} else {
 			Throw ##class(%Exception.General).%New("Table does not exists.")
 		}
