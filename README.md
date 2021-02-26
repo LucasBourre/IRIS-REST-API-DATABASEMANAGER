@@ -1,6 +1,6 @@
 ## IRIS-REST-API-DATABASEMANAGER
 
-[![Gitter](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/iris-rest-api-databasemanager-1)
+[![Gitter](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/iris-rest-api-databasemanager)
 
 Collaborator :
 - Guillaume Leprêtre : [DC Profil](https://community.intersystems.com/user/guillaume-lepretre)
