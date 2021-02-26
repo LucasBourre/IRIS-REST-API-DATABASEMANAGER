@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9a06b5ee-339c-4acd-be4c-637c44dab6a0",
+		"_postman_id": "2bcdd1ff-a977-4dd3-a66d-9575567657a1",
 		"name": "REST API IRIS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,7 +9,7 @@
 			"name": "Tables",
 			"item": [
 				{
-					"name": "Create Table",
+					"name": "Create Table Person",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -40,14 +40,41 @@
 					"response": []
 				},
 				{
-					"name": "Get Table",
+					"name": "Create Table Wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"tableName\":\"wallet\",\r\n\t\"properties\":[\r\n\t\t{\r\n\t\t\t\"name\":\"name\",\t\t\t\t\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"required\":true\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"currency\",\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"required\":true\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"amount\",\r\n\t\t\t\"type\":\"Float\",\r\n            \"initialExpression\": 0.00\r\n\t\t}\r\n\t]\r\n\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9001/database/table",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"database",
+								"table"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Table Person",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://localhost:9001/database/table/:tableName",
 							"protocol": "http",
@@ -71,7 +98,34 @@
 					"response": []
 				},
 				{
-					"name": "Modify Table",
+					"name": "Get Table Wallet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/database/table/:tableName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"database",
+								"table",
+								":tableName"
+							],
+							"variable": [
+								{
+									"key": "tableName",
+									"value": "wallet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modify Table Person",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -84,7 +138,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"tableName\":\"Person\",\r\n\t\"columns\":[\r\n\t\t{\r\n\t\t\t\"name\":\"name\",\t\t\t\t\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"required\":false\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"surname\",\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"required\":false\r\n\t\t}\r\n\t]\r\n\r\n}"
+							"raw": "{\r\n\t\"tableName\":\"Person\",\r\n\t\"columns\":[\r\n\t\t{\r\n\t\t\t\"name\":\"name\",\t\t\t\t\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"required\":false\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"name\":\"firstname\",\r\n\t\t\t\"type\":\"String\",\r\n\t\t\t\"required\":false\r\n\t\t}\r\n\t]\r\n\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9001/database/table",
@@ -102,7 +156,38 @@
 					"response": []
 				},
 				{
-					"name": "Delete Table",
+					"name": "Modify Table Wallet",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"tableName\":\"wallet\",\r\n\t\"columns\":[\r\n\t\t{\r\n\t\t\t\"name\":\"amount\",\t\t\t\t\r\n\t\t\t\"type\":\"Float\",\r\n\t\t\t\"required\":true\r\n\t\t}\r\n\t]\r\n\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9001/database/table",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"database",
+								"table"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Table wallet",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -125,7 +210,7 @@
 							"variable": [
 								{
 									"key": "tableName",
-									"value": "Person"
+									"value": "wallet"
 								}
 							]
 						}
@@ -138,7 +223,7 @@
 			"name": "Datas",
 			"item": [
 				{
-					"name": "Create Data",
+					"name": "Create Data Person",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -151,7 +236,38 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"tableName\": \"Person\",\n    \"data\": [\n        {\n            \"name\": \"name\",\n            \"value\": \"Toto\"\n        },\n        {\n            \"name\": \"firstname\",\n            \"value\": \"Tata\"\n        },\n        {\n            \"name\": \"age\",\n            \"value\": 24\n        }\n    ]\n}"
+							"raw": "{\n    \"tableName\": \"Person\",\n    \"data\": [\n        {\n            \"name\": \"name\",\n            \"value\": \"Smith\"\n        },\n        {\n            \"name\": \"firstname\",\n            \"value\": \"Alex\"\n        },\n        {\n            \"name\": \"age\",\n            \"value\": 24\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9001/database/data",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"database",
+								"data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Data Person 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tableName\": \"Person\",\n    \"data\": [\n        {\n            \"name\": \"name\",\n            \"value\": \"Smith\"\n        },\n        {\n            \"name\": \"firstname\",\n            \"value\": \"Joe\"\n        },\n        {\n            \"name\": \"age\",\n            \"value\": 20\n        },\n        {\n            \"name\": \"adress\",\n            \"value\": \"New York City\"\n        }\n    ]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9001/database/data",
@@ -182,7 +298,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"tableName\": \"Person\",\n    \"data\": [\n        {\n            \"name\": \"firstname\",\n            \"value\": \"Tata\"\n        }\n    ]\n}"
+							"raw": "{\n    \"tableName\": \"Person\",\n    \"data\": [\n        {\n            \"name\": \"name\",\n            \"value\": \"Smith\"\n        }\n    ]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9001/database/data/search",
@@ -205,10 +321,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://localhost:9001/database/data/:tableName/:id",
 							"protocol": "http",
@@ -250,7 +362,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"tableName\":\"Person\",\r\n\t\"dataId\":2,\r\n\t\"data\":[\r\n\t\t\t\t{\r\n\t\t\t\t\t\"name\":\"name\",\r\n\t\t\t\t\t\"value\":\"nameChanged\"\r\n\t\t\t\t}\r\n\t\t\t]\r\n}"
+							"raw": "{\r\n\t\"tableName\":\"Person\",\r\n\t\"dataId\":1,\r\n\t\"data\":[\r\n\t\t\t\t{\r\n\t\t\t\t\t\"name\":\"firstname\",\r\n\t\t\t\t\t\"value\":\"Alexandre\"\r\n\t\t\t\t}\r\n\t\t\t]\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9001/database/data",
@@ -268,7 +380,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete Table",
+					"name": "Delete Data",
 					"request": {
 						"method": "DELETE",
 						"header": [],

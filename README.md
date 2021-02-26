@@ -14,6 +14,9 @@ Docker default port are 9000 , 9001 and 9002.
 ## Installation with ZPM
 
 zpm:USER>install iris-rest-api-databasemanager
+
+On the Administration Portal, make sure you have services and operations in the interoperabilty production such as below: 
+![](https://raw.githubusercontent.com/lucas.bourre/documents/ProductionCapture.png)
  
 ## Installation with Docker
 
@@ -48,6 +51,6 @@ String , Date , Integer (Int), Decimal, Float, TimeStamp , Boolean
 
 ## Next Features
 What we plan to add :
-- More possibilities ( Cardinality , relationship between tables)
+- More possibilities for your table creation ( Cardinality , relationship between tables...)
 - Send multiple datas or tables
-- a Prediction API to predict values
+- A prediction API to predict values
