@@ -8,14 +8,6 @@ Collaborator :
 This application allow you to create  persistent Tables and Data in Cache Database.
 It uses POST , GET , PUT and DELETE methods.
 
-
-
-## Installation with ZPM
-
-zpm:USER>install iris-rest-api-databasemanager
-
-On the Administration Portal, make sure you have services and operations in the interoperabilty production such as below: 
-![](documents/ProductionCapture.png)
  
 ## Installation with Docker
 
@@ -46,13 +38,13 @@ $ docker-compose up -d
 Docker default port are 9000 , 9001 and 9002.
 There is a POSTMAN collection in the project in order to test the application that will allow you to create some Tables and Datas : 
 
-![](documents/postmanCapture.png)
+![](./documents/postmanCapture.png)
 
 Here are different types available :
 String , Date , Integer (Int), Decimal, Float, TimeStamp , Boolean
 
 Datas can be accessed from SQL Management Portal, with a prefix "DatabaseManager_Datas" : 
-![](documents/SQLCapture.png)
+![](./documents/SQLCapture.png)
  
 ## Next Features
 What we plan to add on this project:
