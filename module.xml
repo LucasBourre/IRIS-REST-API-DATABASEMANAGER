@@ -3,7 +3,8 @@
   <Document name="iris-rest-api-databasemanager.ZPM">
     <Module>
       <Name>iris-rest-api-databasemanager</Name>
-      <Version>1.0.0</Version>
+      <Version>1.0.1</Version>
+      <Description>Create persistent Tables and Datas in Cache Database using REST API</Description>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="DatabaseManager.PKG"/>
