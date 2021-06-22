@@ -58,6 +58,10 @@ Method searchData(pRequest As DatabaseManager.Messages.SearchDataRequest, pRespo
 		Set rs = ..sqlPrepare(SQLRequest)
 		While (rs.%Next()){
 			Set datas = ##class(DatabaseManager.Object.Datas).%New()
+			Set data = ##class(DatabaseManager.Object.Data).%New()
+			Set data.name = "ID"
+			Set data.value = rs.%Get("ID")
+			Set tsc = datas.data.Insert(data)
 			For i=1:1:def.Properties.Count() {
 				Set data = ##class(DatabaseManager.Object.Data).%New()
 				Set data.name = def.Properties.GetAt(i).Name
@@ -142,7 +146,11 @@ Method deleteData(pRequest As DatabaseManager.Messages.DeleteDataRequest, pRespo
 		
 		Set rs = ..sqlPrepare(SQLRequest)
 		Do rs.%Next()
-		Set pResponse.response = ..verifyResultSQL(rs)
+		if (rs.%SQLCODEGet()=100){
+			set pResponse.response = "No data for ID "_pRequest.dataId
+		}else{
+			Set pResponse.response = ..verifyResultSQL(rs)
+		}
 	}Catch ex {
 		Set pResponse.response = "Error : "_ex.DisplayString()
 	}
